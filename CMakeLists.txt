@@ -1,14 +1,20 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(go1_republisher)
 
 add_compile_options(-std=c++11)
 
 ## Find catkin and any catkin packages
-find_package(catkin REQUIRED COMPONENTS tf rospy roscpp std_msgs sensor_msgs nav_msgs camera_info_manager_py cv_bridge image_transport)
-find_package(OpenCV 4 REQUIRED)
-
-## Declare a catkin package
-catkin_package(CATKIN_DEPENDS tf rospy roscpp message_runtime camera_info_manager_py cv_bridge image_transport)
+find_package(ament_cmake REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+# find_package(camera_info_manager_py REQUIRED)
+# find_package(cv_bridge REQUIRED)
+# find_package(image_transport REQUIRED)
+# find_package(OpenCV 4 REQUIRED)
 
 link_directories(${CMAKE_SOURCE_DIR}/../unitree_legged_sdk/lib/cpp/arm64)
 link_directories(${CMAKE_SOURCE_DIR}/../UnitreecameraSDK/lib/arm64)
@@ -24,9 +30,12 @@ include_directories(
 )
 
 add_executable(imu_odom src/imu_odom.cpp)
-target_link_libraries(imu_odom ${EXTRA_LIBS} ${catkin_LIBRARIES})
-add_dependencies(imu_odom ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(imu_odom ${EXTRA_LIBS})
+ament_target_dependencies(imu_odom tf2 rclpy rclcpp std_msgs nav_msgs sensor_msgs)
 
-add_executable(camera src/camera.cpp)
-target_link_libraries(camera ${EXTRA_LIBS} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-add_dependencies(camera ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_executable(camera src/camera.cpp)
+# target_link_libraries(camera ${EXTRA_LIBS} ${OpenCV_LIBRARIES})
+# add_dependencies(camera ${${PROJECT_NAME}_EXPORTED_TARGETS})
+
+ament_export_dependencies(tf2 rclpy rclcpp std_msgs nav_msgs sensor_msgs)
+ament_package()
