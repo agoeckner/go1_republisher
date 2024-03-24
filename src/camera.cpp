@@ -55,8 +55,8 @@ int main(int argc, char **argv){
 		header.stamp = current_time;
 		header.frame_id = "camera_face";
 
-        sensor_msgs::ImagePtr msg_left = cv_bridge::CvImage(header, "bgr8", left).toImageMsg();
-        sensor_msgs::ImagePtr msg_right = cv_bridge::CvImage(header, "bgr8", right).toImageMsg();
+        sensor_msgs::msg::ImagePtr msg_left = cv_bridge::CvImage(header, "bgr8", left).toImageMsg();
+        sensor_msgs::msg::ImagePtr msg_right = cv_bridge::CvImage(header, "bgr8", right).toImageMsg();
 
         pub_img_left.publish(msg_left);
         pub_img_right.publish(msg_right);
