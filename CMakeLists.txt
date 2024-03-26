@@ -43,5 +43,8 @@ ament_target_dependencies(imu_odom tf2_ros rclpy rclcpp std_msgs nav_msgs sensor
 # target_link_libraries(camera ${EXTRA_LIBS} ${OpenCV_LIBRARIES})
 # add_dependencies(camera ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
-ament_export_dependencies(tf2_ros rclpy rclcpp std_msgs nav_msgs sensor_msgs)
+install(TARGETS imu_odom
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()
