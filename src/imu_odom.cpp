@@ -54,6 +54,9 @@ public:
 		// Create timers.
         loop_udpSend = this->create_wall_timer(std::chrono::milliseconds(2), std::bind(&Custom::highUdpSend, this->go1_sdk));
         loop_udpRecv = this->create_wall_timer(std::chrono::milliseconds(2), std::bind(&Custom::highUdpRecv, this->go1_sdk));
+        loop_publishData = this->create_wall_timer(std::chrono::milliseconds(10), std::bind(&Go1ImuNode::publishData, this));
+
+        RCLCPP_INFO(this->get_logger(), "Go1ImuNode initialized.");
     }
 
 private:
@@ -63,11 +66,18 @@ private:
     std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster;
     rclcpp::TimerBase::SharedPtr loop_udpSend;
     rclcpp::TimerBase::SharedPtr loop_udpRecv;
+    rclcpp::TimerBase::SharedPtr loop_publishData;
 
     long count = 0;
 
     void publishData()
     {
+        if(this->go1_sdk->high_state.imu.quaternion[0] == NAN)
+        {
+            RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 1000, "Waiting for valid transform.");
+            return;
+        }
+
         auto current_time = this->now();
 
         sensor_msgs::msg::Imu msg_imu;
