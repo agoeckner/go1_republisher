@@ -80,6 +80,8 @@ private:
 
         auto current_time = this->now();
 
+
+        // IMU message
         sensor_msgs::msg::Imu msg_imu;
 
         msg_imu.header.stamp = current_time;
@@ -100,6 +102,8 @@ private:
 
         pub_imu->publish(msg_imu);
 
+
+        // Odometry message
         nav_msgs::msg::Odometry msg_odom;
 
         msg_odom.header.stamp = current_time;
@@ -121,7 +125,8 @@ private:
 
         pub_odom->publish(msg_odom);
 
-        // Publish tf transform
+
+        // Odom -> base_link transform
         geometry_msgs::msg::TransformStamped odom_trans;
         odom_trans.header.stamp = current_time;
         odom_trans.header.frame_id = "odom";
