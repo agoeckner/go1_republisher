@@ -67,7 +67,6 @@ public:
 private:
     void topic_callback(const geometry_msgs::msg::Twist & msg) const
     {
-    RCLCPP_INFO(this->get_logger(), "I heard: '%.2f' '%.2f' '%.2f'", msg.linear.x, msg.linear.y, msg.angular.z);
     this->go1_sdk->high_cmd.velocity[0]=msg.linear.x;
     this->go1_sdk->high_cmd.velocity[1]=msg.linear.y;
     this->go1_sdk->high_cmd.yawSpeed=msg.angular.z;
