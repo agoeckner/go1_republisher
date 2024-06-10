@@ -5,7 +5,7 @@
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
 #include <chrono>
 #include <memory>
-
+#include "geometry_msgs/msg/twist.hpp"
 using namespace UNITREE_LEGGED_SDK;
 
 class Custom
@@ -20,6 +20,10 @@ public:
     Custom() : high_udp(8090, "192.168.123.161", 8082, sizeof(HighCmd), sizeof(HighState))
     {
         high_udp.InitCmdData(high_cmd);
+        high_state.imu.quaternion[0]=0;
+        high_state.imu.quaternion[1]=0;
+        high_state.imu.quaternion[2]=0;
+        high_state.imu.quaternion[3]=0;
     }
 
     void highUdpSend()
@@ -39,7 +43,7 @@ class Go1ImuNode : public rclcpp::Node
 {
 public:
     Go1ImuNode() : Node("go1_imu")
-    {
+    {   subscription_ = this->create_subscription<geometry_msgs::msg::Twist>("/ug1/cmd_vel", 10, std::bind(&Go1ImuNode::topic_callback, this, std::placeholders::_1));
 		RCLCPP_INFO(this->get_logger(), "Initializing Go1ImuNode.");
 
 		// Start the Go1 SDK.
@@ -57,9 +61,19 @@ public:
         loop_publishData = this->create_wall_timer(std::chrono::milliseconds(10), std::bind(&Go1ImuNode::publishData, this));
 
         RCLCPP_INFO(this->get_logger(), "Go1ImuNode initialized.");
+
     }
 
 private:
+    void topic_callback(const geometry_msgs::msg::Twist & msg) const
+    {
+    this->go1_sdk->high_cmd.velocity[0]=msg.linear.x;
+    this->go1_sdk->high_cmd.velocity[1]=msg.linear.y;
+    this->go1_sdk->high_cmd.yawSpeed=msg.angular.z;
+    this->go1_sdk->high_cmd.mode=2;
+    }
+    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_;
+
 	std::shared_ptr<Custom> go1_sdk;
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr pub_imu;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_odom;
