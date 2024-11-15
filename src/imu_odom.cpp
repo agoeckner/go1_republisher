@@ -101,10 +101,10 @@ private:
         msg_imu.header.stamp = current_time;
         msg_imu.header.frame_id = "imu_link";
 
-        msg_imu.orientation.w = this->go1_sdk->high_state.imu.quaternion[0];
-        msg_imu.orientation.x = this->go1_sdk->high_state.imu.quaternion[1];
-        msg_imu.orientation.y = this->go1_sdk->high_state.imu.quaternion[2];
-        msg_imu.orientation.z = this->go1_sdk->high_state.imu.quaternion[3];
+        msg_imu.orientation.x = this->go1_sdk->high_state.imu.quaternion[0]; // Not sure why, but the quaternion we get is in order x, y, z, w
+        msg_imu.orientation.y = this->go1_sdk->high_state.imu.quaternion[1]; // while documentation has it as w, x, y, z. This works for our robot
+        msg_imu.orientation.z = this->go1_sdk->high_state.imu.quaternion[2]; // but may have to edit to port anywhere else
+        msg_imu.orientation.w = this->go1_sdk->high_state.imu.quaternion[3];
 
         msg_imu.angular_velocity.x = this->go1_sdk->high_state.imu.gyroscope[0];
         msg_imu.angular_velocity.y = this->go1_sdk->high_state.imu.gyroscope[1];
@@ -128,10 +128,10 @@ private:
         msg_odom.pose.pose.position.y = this->go1_sdk->high_state.position[1];
         msg_odom.pose.pose.position.z = this->go1_sdk->high_state.position[2];
 
-        msg_odom.pose.pose.orientation.w = this->go1_sdk->high_state.imu.quaternion[0];
-        msg_odom.pose.pose.orientation.x = this->go1_sdk->high_state.imu.quaternion[1];
-        msg_odom.pose.pose.orientation.y = this->go1_sdk->high_state.imu.quaternion[2];
-        msg_odom.pose.pose.orientation.z = this->go1_sdk->high_state.imu.quaternion[3];
+        msg_odom.pose.pose.orientation.x = this->go1_sdk->high_state.imu.quaternion[0];
+        msg_odom.pose.pose.orientation.y = this->go1_sdk->high_state.imu.quaternion[1];
+        msg_odom.pose.pose.orientation.z = this->go1_sdk->high_state.imu.quaternion[2];
+        msg_odom.pose.pose.orientation.w = this->go1_sdk->high_state.imu.quaternion[3];
 
         msg_odom.twist.twist.linear.x = this->go1_sdk->high_state.velocity[0];
         msg_odom.twist.twist.linear.y = this->go1_sdk->high_state.velocity[1];
@@ -149,10 +149,10 @@ private:
         odom_trans.transform.translation.x = this->go1_sdk->high_state.position[0];
         odom_trans.transform.translation.y = this->go1_sdk->high_state.position[1];
         odom_trans.transform.translation.z = this->go1_sdk->high_state.position[2];
-        odom_trans.transform.rotation.w = this->go1_sdk->high_state.imu.quaternion[0];
-        odom_trans.transform.rotation.x = this->go1_sdk->high_state.imu.quaternion[1];
-        odom_trans.transform.rotation.y = this->go1_sdk->high_state.imu.quaternion[2];
-        odom_trans.transform.rotation.z = this->go1_sdk->high_state.imu.quaternion[3];
+        odom_trans.transform.rotation.x = this->go1_sdk->high_state.imu.quaternion[0];
+        odom_trans.transform.rotation.y = this->go1_sdk->high_state.imu.quaternion[1];
+        odom_trans.transform.rotation.z = this->go1_sdk->high_state.imu.quaternion[2];
+        odom_trans.transform.rotation.w = this->go1_sdk->high_state.imu.quaternion[3];
 
         tf_broadcaster->sendTransform(odom_trans);
 
